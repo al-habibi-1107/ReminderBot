@@ -9,8 +9,8 @@ List<Item> _itemList=[
 Item(1, "Pizza", 26, 1),
 Item(2, "Doughnut", 12, 1),
 Item(3, "Cake", 8, 1),
-Item(4, "Biscuit", 18, 1),
-Item(5, "Banana", 10, 1)
+// Item(4, "Biscuit", 18, 1),
+// Item(5, "Banana", 10, 1)
 ];
 
 // all the stream controllers
@@ -72,6 +72,12 @@ itemListSink.add(_itemList);
 
 }
 
+void addItem(Item item){
+  print("added item");
+  _itemList.add(item);
+  itemListSink.add(_itemList);
+
+}
 
 
 // dispose function to close all controllers
@@ -79,6 +85,10 @@ dispose(){
   _itemListStreamController.close();
   _itemQuantityIncrementController.close();
   _itemQuantityDecrementController.close();
+}
+
+int itemCount(){
+  return _itemList.length;
 }
 
 
