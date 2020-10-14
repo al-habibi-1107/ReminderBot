@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import './item_bloc.dart';
 import './item.dart';
+import './expand_tile.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,27 +21,8 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  final _formKey = GlobalKey<FormState>();
-
-  String itemName;
-  double price;
-  int quantity;
-
-  void _submitForm() {
-    bool isValid = _formKey.currentState.validate();
-
-    if (isValid) {
-      _formKey.currentState.save();
-      int index = ItemBloc().itemCount() + 1;
-      print(index);
-      _itemBloc.addItem(Item(index, itemName, price, quantity));
-      setState(() {});
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final device = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 245, 245, 1),
       appBar: AppBar(
@@ -49,88 +31,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          ExpansionTile(
-            title: Text(" Add a new Entry"),
-            children: [
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      width: device.width * 0.9,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return "Enter an Item Name";
-                          } else
-                            return null;
-                        },
-                        onSaved: (value) {
-                          itemName = value;
-                        },
-                        key: ValueKey("itemName"),
-                        decoration: InputDecoration(
-                            labelText: "Item Name",
-                            border: const OutlineInputBorder()),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(
-                              left: 20, top: 10, bottom: 10, right: 10),
-                          width: device.width * 0.5,
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            key: ValueKey("price"),
-                            validator: (value) {
-                              if (value.isEmpty || double.parse(value) == 0) {
-                                return "Enter a Valid Price";
-                              } else
-                                return null;
-                            },
-                            onSaved: (value) {
-                              price = double.parse(value);
-                            },
-                            decoration: InputDecoration(
-                                labelText: "Price",
-                                border: const OutlineInputBorder()),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          width: device.width * 0.3,
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            key: ValueKey("quantity"),
-                            validator: (value) {
-                              if (value.isEmpty || int.parse(value) == 0) {
-                                return "Enter a Valid quantity";
-                              } else
-                                return null;
-                            },
-                            onSaved: (value) {
-                              quantity = int.parse(value);
-                            },
-                            decoration: InputDecoration(
-                                labelText: "Quantity",
-                                border: const OutlineInputBorder()),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              FlatButton(
-                child: Text("Add Item"),
-                onPressed: _submitForm,
-              ),
-            ],
-          ),
+          ExpandTile(_itemBloc),
           Expanded(
             child: Container(
               padding: EdgeInsets.all(20),
@@ -142,6 +43,7 @@ class _HomePageState extends State<HomePage> {
                       : ListView.builder(
                           itemBuilder: (context, index) {
                             return Card(
+                              key: ValueKey(snapshot.data[index].id),
                               color: Color.fromRGBO(31, 60, 136, 1),
                               elevation: 4,
                               shadowColor: Color.fromRGBO(31, 60, 136, 1),

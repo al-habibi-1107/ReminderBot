@@ -43,14 +43,14 @@ ItemBloc(){
 // increment logic
 incrementQuantity(Item item){
   // get the price and quantity
-  double price = item.price;
+  double price = item.price/item.quantity;
   // increment quanitity
   int quantity =item.quantity+1;
 
   // make changes in the quantity
-  _itemList[item.id-1].quantity=quantity;
+  _itemList.firstWhere((element) => element.id==item.id).quantity=quantity;
   // make changes in the price
-  _itemList[item.id-1].price= price*quantity;
+ _itemList.firstWhere((element) => element.id==item.id).price=quantity*price;
 
   // make the changes as an input to the list sink
   // and make the listener work
@@ -60,12 +60,17 @@ incrementQuantity(Item item){
 // decrement logic
 decrementQuantity(Item item){
 
-double price =item.price;
+double price =item.price/item.quantity;
 
 int quantity= item.quantity-1;
 
-_itemList[item.id-1].quantity=quantity;
-_itemList[item.id-1].price= price*quantity;
+if(quantity<=0){
+  _itemList.remove(item);
+}else{
+ _itemList.firstWhere((element) => element.id==item.id).quantity=quantity;
+ _itemList.firstWhere((element) => element.id==item.id).price=quantity*price;
+}
+
 
 itemListSink.add(_itemList);
 
